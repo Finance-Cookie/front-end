@@ -10,6 +10,7 @@ type Client = {
   name?: string
   phone?: string
   address?: Address
+  email?: string
 }
 
 type ClientContextType = {
