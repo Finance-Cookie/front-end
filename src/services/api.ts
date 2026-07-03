@@ -1,0 +1,98 @@
+import axios from 'axios'
+import { Platform } from 'react-native'
+
+// Resolve API base URL from multiple possible sources in RN/Expo:
+// 1) expo-constants extra (recommended for Expo builds)
+// 2) runtime-global process env (when available in some dev setups)
+// 3) fallback to emulator/localhost defaults
+function resolveApiBase(): string {
+  // 1) Try expo-constants (works in Expo apps when configured)
+  try {
+    // Use require to avoid hard dependency when not running in Expo
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const Constants = require('expo-constants')
+    const extra = Constants?.default?.expoConfig?.extra || Constants?.expoConfig?.extra
+    const fromConstants = extra?.API_BASE_URL
+    if (fromConstants && String(fromConstants).trim() !== '') {
+      return String(fromConstants).trim()
+    }
+  } catch (e) {
+    // ignore if expo-constants is not available
+  }
+
+  // 2) Try global/process env (some dev setups populate this)
+  try {
+    const maybe = (global as any)?.process?.env?.API_BASE_URL
+    if (maybe && String(maybe).trim() !== '') return String(maybe).trim()
+  } catch (e) {}
+
+  // 3) Fallback defaults for emulator / localhost
+  return Platform.OS === 'android' ? 'http://10.0.2.2:8000' : 'http://localhost:8000'
+}
+
+const BASE_URL = resolveApiBase()
+
+const api = axios.create({
+  baseURL: `${BASE_URL}/api/`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+// Small helper to log axios activity during development
+function attachInterceptors(instance: ReturnType<typeof axios.create>) {
+  instance.interceptors.request.use((config) => {
+    // eslint-disable-next-line no-console
+    console.debug('[api] Request', config.method, config.url)
+    return config
+  })
+
+  instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      // eslint-disable-next-line no-console
+      console.warn('[api] Response error', error?.response?.status, error?.message)
+      return Promise.reject(error)
+    }
+  )
+}
+
+// Attach simple interceptors for development/debugging
+attachInterceptors(api)
+
+export type Client = {
+  id: number
+  nome: string
+  email: string
+  telefone: string
+  bairro: string
+  logradouro: string
+  numero: string
+}
+
+export type Product = {
+  id: number
+  nome: string
+  valor: number
+  descricao: string
+}
+
+export async function getClients(): Promise<Client[]> {
+  const response = await api.get<Client[]>('clients/')
+  return response.data
+}
+
+export async function createClient(payload: Omit<Client, 'id'>): Promise<Client> {
+  const response = await api.post<Client>('clients/', payload)
+  return response.data
+}
+
+export async function getProducts(): Promise<Product[]> {
+  const response = await api.get<Product[]>('products/')
+  return response.data
+}
+
+export async function createProduct(payload: Omit<Product, 'id'>): Promise<Product> {
+  const response = await api.post<Product>('products/', payload)
+  return response.data
+}
