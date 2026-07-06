@@ -1,9 +1,10 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
 
 type Product = {
-  name?: string
-  value?: number
-  description?: string
+  id?: number
+  nome?: string
+  valor?: number
+  descricao?: string
 }
 
 type ProductContextType = {

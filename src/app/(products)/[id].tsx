@@ -93,7 +93,7 @@ export default function ProductDetails(){
                         <View className="gap-4">
                             <View className="flex-row gap-2 justify-between items-center">
                                 <Text className="self-start text-preto font-bold text-2xl">{product.nome}</Text>
-                                <Text className="self-start text-preto font-bold text-2xl">{product.id}</Text>
+                                <Text className="self-start text-preto font-bold text-2xl">#{product.id}</Text>
                             </View>
                             <Text className="text-preto text-2xl font-normal">{product.descricao}</Text>
                             <View className="flex-row gap-2 items-center border-t-2 border-cinza-200 pt-2">

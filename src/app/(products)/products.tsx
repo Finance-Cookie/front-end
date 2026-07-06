@@ -6,15 +6,20 @@ import { Feather } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
 import { getProducts, Product } from "@/services/api"
+import { Input } from "@/components/Input"
 
 export default function ProductsList(){
     const router = useRouter()
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState<boolean>(true)
 
-    async function loadProducts() {
+    const [search, setSearch] = useState("")
+    const [ordering, setOrdering] = useState("")
+
+    async function loadProducts(searchText = "", ordering = "") {
         try {
-            const data = await getProducts()
+            setLoading(true)
+            const data = await getProducts(searchText, ordering)
             setProducts(data)
         } catch (error) {
             console.error("Erro ao buscar produtos:", error)
@@ -25,15 +30,50 @@ export default function ProductsList(){
     }
 
     useEffect(() => {
-        loadProducts()
-    }, [])
+        loadProducts(search, ordering)
+    }, [search, ordering])
 
     return (
         <View className="w-full h-full">
             <ScrollView>
                 <View className="w-full px-10 h-full items-center self-center gap-5 py-10">
                     <Calendar/>
-                    <Text className="text-preto text-xl font-normal self-start">Total de Produtos: {products.length}</Text>
+                    <Input
+                        label="Pesquisar produto"
+                        value={search}
+                        onChangeText={setSearch}
+                    />
+                    <View className="flex-row justify-between w-full gap-2">
+
+                        <FilterButton
+                            label="A-Z"
+                            selected={ordering === "nome"}
+                            background="bg-amarelo"
+                            onPress={() => setOrdering("nome")}
+                        />
+
+                        <FilterButton
+                            label="Z-A"
+                            selected={ordering === "-nome"}
+                            background="bg-amarelo"
+                            onPress={() => setOrdering("-nome")}
+                        />
+
+                        <FilterButton
+                            label="Menor preço"
+                            selected={ordering === "valor"}
+                            background="bg-amarelo"
+                            onPress={() => setOrdering("valor")}
+                        />
+
+                        <FilterButton
+                            label="Maior preço"
+                            selected={ordering === "-valor"}
+                            background="bg-amarelo"
+                            onPress={() => setOrdering("-valor")}
+                        />
+
+                    </View>
                     <View className="gap-4 w-full">
                         {loading && (
                             <Text className="text-preto text-2xl font-bold">
@@ -41,6 +81,8 @@ export default function ProductsList(){
                             </Text>
                         )}
 
+
+                        <Text className="text-preto text-xl font-normal self-start">Total de Produtos: {products.length}</Text>
                         {!loading && products.map((product) => (
                             <Card onPress={() => router.push(`/${product.id}`)} className="flex-row justify-between items-center" backgroundColor="#FFFFF2" borderColor="cinza-200">
                                 <View className="gap-1">

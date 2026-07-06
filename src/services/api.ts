@@ -30,7 +30,7 @@ function resolveApiBase(): string {
 
 
   // 3) Fallback defaults for emulator / localhost
-  return Platform.OS === 'android' ? 'http://10.0.2.2:8000' : 'http://localhost:8000'
+  return 'https://super-duper-succotash-qg5597j6794f4r5w-8000.app.github.dev'
 }
 
 const BASE_URL = resolveApiBase()
@@ -95,9 +95,10 @@ export type NewClientPayload = {
 }
 
 export type NewProductPayload = {
-  name?: string
-  value?: number
-  description?: string
+  id?: number
+  nome?: string
+  valor?: number
+  descricao?: string
 }
 
 export type UserProfile = {
@@ -142,9 +143,44 @@ export async function createClient(payload: NewClientPayload): Promise<Client> {
   return response.data
 }
 
-export async function getProducts(): Promise<Product[]> {
-  const response = await api.get<Product[]>('products/')
+export async function getProducts(
+  search?: string,
+  ordering?: string,
+): Promise<Product[]> {
+  const params: any = {}
+
+  if (search) params.search = search
+  if (ordering) params.ordering = ordering
+  
+  const response = await api.get<{ results: Product[] }>("produtos/", { params, })
+  return response.data.results
+}
+
+export async function updateProduct(
+  id: number,
+  payload: NewProductPayload
+): Promise<Product> {
+
+  const body = {
+    nome: payload.nome || '',
+    valor: payload.valor ?? 0,
+    descricao: payload.descricao || '',
+  }
+
+  const response = await api.put<Product>(
+    `produtos/${id}/`,
+    body
+  )
+
   return response.data
+}
+
+export async function deleteProduct(id: number): Promise<void> {
+
+  await api.delete(
+    `produtos/${id}/`
+  )
+
 }
 
 export async function registerUser(payload: RegisterUserPayload): Promise<UserProfile & { message?: string }> {
@@ -171,10 +207,10 @@ export async function updateMe(payload: UpdateMePayload): Promise<UserProfile & 
 
 export async function createProduct(payload: NewProductPayload): Promise<Product> {
   const body = {
-    nome: payload.name || '',
-    valor: payload.value ?? 0,
-    descricao: payload.description || '',
+    nome: payload.nome || '',
+    valor: payload.valor ?? 0,
+    descricao: payload.descricao || '',
   }
-  const response = await api.post<Product>('products/', body)
+  const response = await api.post<Product>('produtos/', body)
   return response.data
 }

@@ -23,7 +23,7 @@ export function Button({ label, children, background, color, onPress, className,
 export function FilterButton({ label, children, background, color, onPress, selected, ...rest }: ButtonProps) {
     return (
         <View>
-            <TouchableOpacity className={`px-4 py-2 rounded-full border border-cinza-200 justify-center items-center ${selected ? background : 'bg-branco-100'}`}>
+            <TouchableOpacity onPress={onPress} className={`${selected ? (background || "bg-cinza-100") : 'bg-branco-100'} px-4 py-2 rounded-full border border-cinza-200 justify-center items-center`}>
                 <Text className={`font-normal text-xl ${color}`}>{label}</Text>
             </TouchableOpacity>
         </View>
