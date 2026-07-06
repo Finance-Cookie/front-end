@@ -3,6 +3,9 @@ import { Input } from "@/components/Input"
 import { View, ScrollView } from "react-native"
 import { useRouter } from "expo-router"
 import { useState } from "react"
+import { Alert } from "react-native"
+
+import { registerUser } from "@/services/api"
 
 export default function Register(){
     const router = useRouter()
@@ -11,8 +14,13 @@ export default function Register(){
     const [email, setEmail] = useState("")
     const [senha, setSenha] = useState("")
 
-    function handleNext() {
-        router.push("/money")
+    async function handleNext() {
+        try {
+            await registerUser({ nome, email, senha })
+            router.push("/money")
+        } catch (e: any) {
+            Alert.alert("Erro", e?.response?.data?.detail || "Informações incorretas, tente novamente!" )
+        }
     }
 
     return (

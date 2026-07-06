@@ -1,8 +1,13 @@
 import { Button } from "@/components/Button"
 import { Input } from "@/components/Input"
-import { View, ScrollView, Alert } from "react-native"
+import { View, ScrollView } from "react-native"
+import { Alert } from "react-native"
+
 import { useRouter } from "expo-router"
 import { useState } from "react"
+
+
+import { updateMe } from "@/services/api"
 
 export default function Money(){
     const router = useRouter()
@@ -11,9 +16,14 @@ export default function Money(){
     const [saldoOnline, setSaldoOnline] = useState("")
 
     async function handleRegister() {
-        router.replace("/(home)")
+        try {
+            await updateMe({ saldo_fisico: saldoFisico, saldo_online: saldoOnline })
+            router.replace("/(home)")
+        } catch (e: any) {
+            Alert.alert("Erro", e?.response?.data?.detail || "Informações incorretas, tente novamente!")
+        }
     }
-    
+
     return (
         <ScrollView>
             <View className="w-full px-10 h-full items-center self-center gap-5 pt-16">

@@ -22,9 +22,12 @@ function resolveApiBase(): string {
 
   // 2) Try global/process env (some dev setups populate this)
   try {
-    const maybe = (global as any)?.process?.env?.API_BASE_URL
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const maybe = (globalThis as any)?.process?.env?.API_BASE_URL
+
     if (maybe && String(maybe).trim() !== '') return String(maybe).trim()
   } catch (e) {}
+
 
   // 3) Fallback defaults for emulator / localhost
   return Platform.OS === 'android' ? 'http://10.0.2.2:8000' : 'http://localhost:8000'
@@ -41,20 +44,22 @@ const api = axios.create({
 
 // Small helper to log axios activity during development
 function attachInterceptors(instance: ReturnType<typeof axios.create>) {
-  instance.interceptors.request.use((config) => {
+  instance.interceptors.request.use((config: any) => {
     // eslint-disable-next-line no-console
     console.debug('[api] Request', config.method, config.url)
     return config
   })
 
+
   instance.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    (response: any) => response,
+    (error: any) => {
       // eslint-disable-next-line no-console
       console.warn('[api] Response error', error?.response?.status, error?.message)
       return Promise.reject(error)
     }
   )
+
 }
 
 // Attach simple interceptors for development/debugging
@@ -95,10 +100,34 @@ export type NewProductPayload = {
   description?: string
 }
 
+export type UserProfile = {
+  id: number
+  nome: string
+  email: string
+  criado_em: string
+  saldo_fisico: string
+  saldo_online: string
+}
+
+export type RegisterUserPayload = {
+  nome?: string
+  email?: string
+  senha?: string
+}
+
+export type UpdateMePayload = {
+  nome?: string
+  email?: string
+  senha?: string
+  saldo_fisico?: number | string
+  saldo_online?: number | string
+}
+
 export async function getClients(): Promise<Client[]> {
   const response = await api.get<Client[]>('clients/')
   return response.data
 }
+
 
 export async function createClient(payload: NewClientPayload): Promise<Client> {
   const body = {
@@ -117,6 +146,28 @@ export async function getProducts(): Promise<Product[]> {
   const response = await api.get<Product[]>('products/')
   return response.data
 }
+
+export async function registerUser(payload: RegisterUserPayload): Promise<UserProfile & { message?: string }> {
+  const body = {
+    nome: payload.nome || '',
+    email: payload.email || '',
+    senha: payload.senha || '',
+  }
+  const response = await api.post<UserProfile & { message?: string }>('users/', body)
+  return response.data
+
+}
+
+export async function getMe(): Promise<UserProfile> {
+  const response = await api.get<UserProfile>('users/me/')
+  return response.data
+}
+
+export async function updateMe(payload: UpdateMePayload): Promise<UserProfile & { message?: string }> {
+  const response = await api.put<UserProfile & { message?: string }>('users/me/', payload)
+  return response.data
+}
+
 
 export async function createProduct(payload: NewProductPayload): Promise<Product> {
   const body = {

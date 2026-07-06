@@ -4,13 +4,20 @@ import { Feather } from "@expo/vector-icons"
 import { View, Text, ScrollView } from "react-native"
 import { useEffect, useState } from "react"
 
+import { getMe } from "@/services/api"
+
 export default function Profile(){
-    const [user, setUser] = useState<{ name: String | null, email: String | null, criado_em: String | null, saldo_fisico: String | null, saldo_online: String | null } | null>(null)
+    const [user, setUser] = useState<{ id: number, nome: string, email: string, criado_em: string, saldo_fisico: string, saldo_online: string } | null>(null)
+
     const saldoTotal = (user ? Number(user.saldo_fisico) + Number(user.saldo_online) : 0).toFixed(2)
 
     useEffect(() => {
-        
+        (async () => {
+            const u = await getMe()
+            setUser(u)
+        })().catch(() => {})
     }, [])
+
 
     if (!user) {
         return (
