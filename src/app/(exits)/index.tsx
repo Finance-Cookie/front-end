@@ -30,6 +30,21 @@ export default function Exits(){
                         </View>
                         <Feather name="arrow-right" size={28} color="#1E1E1E"/>
                     </Card>
+                    <Card
+                        onPress={() => router.push("/(items)")}
+                        className="flex-row justify-between items-center"
+                        backgroundColor="#FFFFF2"
+                        borderColor="cinza-200"
+                    >
+                        <View className="gap-1">
+                            <Text className="text-preto text-2xl font-bold">Itens</Text>
+                            <Text className="text-preto text-xl font-normal">
+                                Gerenciar itens de saída
+                            </Text>
+                        </View>
+
+                        <Feather name="arrow-right" size={28} color="#1E1E1E" />
+                    </Card>
                 </View>
             </ScrollView>
             <View className="w-full bg-preto flex-row justify-around p-12 pb-16 rounded-t-2xl">

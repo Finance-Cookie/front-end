@@ -14,6 +14,7 @@ export default function Layout() {
               },
         }}>
         <Stack.Screen name='index' options={{ title: "Tipo de Entrada"}}/>
+        <Stack.Screen name='select-type' options={{ title: "Selecionar Tipo" }} />
         <Stack.Screen name='sale-client' options={{ title: "Cliente"}}/>
         <Stack.Screen name='sale-products' options={{ title: "Itens"}}/>
         <Stack.Screen name='sale-payment' options={{ title: "Pagamento"}}/>

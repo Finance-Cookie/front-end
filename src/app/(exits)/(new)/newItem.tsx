@@ -1,21 +1,61 @@
-import { Input, InputSelect } from "@/components/Input"
-import { useNewExit } from "@/contexts/NewExitContext"
+import { Input } from "@/components/Input"
 import { useRouter } from "expo-router"
 import { View, Text, ScrollView } from "react-native"
-import { Button, FilterButton } from "@/components/Button"
+import { Button } from "@/components/Button"
+import { useState } from "react"
+import { createItem } from "@/services/api"
 
-export default function NewExit(){
+export default function NewItem() {
     const router = useRouter()
-    const { exit, setExit } = useNewExit()
+
+    const [nome, setNome] = useState("")
+    const [valor, setValor] = useState("")
+    const [loading, setLoading] = useState(false)
+
+    async function handleCreateItem() {
+        try {
+            setLoading(true)
+
+            await createItem({
+                nome,
+                valor,
+            })
+
+            router.replace("/(exits)/(new)/purchase-itens")
+        } catch (error: any) {
+            console.log("Erro ao criar item:", error?.response?.data || error.message)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <View className="w-full h-full">
             <ScrollView>
                 <View className="w-full px-10 h-full items-center self-center gap-5 py-10">
                     <View className="w-full gap-5">
-                        <Input label="Nome"/>
-                        <Input label="Valor"/>
-                        <Button label="Salvar" background="bg-vermelho-100" color="text-branco-100" onPress={() => router.back()}/>
+                        <Text className="text-preto text-2xl font-bold self-start">
+                            Novo Item
+                        </Text>
+
+                        <Input
+                            label="Nome"
+                            value={nome}
+                            onChangeText={setNome}
+                        />
+
+                        <Input
+                            label="Valor"
+                            value={valor}
+                            onChangeText={setValor}
+                        />
+
+                        <Button
+                            label={loading ? "Salvando..." : "Salvar"}
+                            background="bg-vermelho-100"
+                            color="text-branco-100"
+                            onPress={handleCreateItem}
+                        />
                     </View>
                 </View>
             </ScrollView>

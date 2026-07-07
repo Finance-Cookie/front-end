@@ -384,3 +384,72 @@ export async function updateTipoPagamento(
 export async function deleteTipoPagamento(id: number): Promise<void> {
   await api.delete(`tipos/${id}/`)
 }
+
+export type Item = {
+  id: number
+  nome: string
+  valor: number | string
+}
+
+export type NewItemPayload = {
+  nome?: string
+  valor?: number | string
+}
+
+function normalizeMoney(value?: number | string): number {
+  if (value === undefined || value === null || value === "") return 0
+  return Number(String(value).replace(",", "."))
+}
+
+export async function getItems(
+  search?: string,
+  ordering?: string
+): Promise<Item[]> {
+  const params: any = {}
+
+  if (search) params.search = search
+  if (ordering) params.ordering = ordering
+
+  const response = await api.get<Item[] | { results: Item[] }>(
+    "items/",
+    { params }
+  )
+
+  if (Array.isArray(response.data)) {
+    return response.data
+  }
+
+  return response.data.results || []
+}
+
+export async function createItem(payload: NewItemPayload): Promise<Item> {
+  const body = {
+    nome: payload.nome || "",
+    valor: normalizeMoney(payload.valor),
+  }
+
+  const response = await api.post<Item>("items/", body)
+  return response.data
+}
+
+export async function getItem(id: number): Promise<Item> {
+  const response = await api.get<Item>(`items/${id}/`)
+  return response.data
+}
+
+export async function updateItem(
+  id: number,
+  payload: NewItemPayload
+): Promise<Item> {
+  const body = {
+    nome: payload.nome || "",
+    valor: normalizeMoney(payload.valor),
+  }
+
+  const response = await api.patch<Item>(`items/${id}/`, body)
+  return response.data
+}
+
+export async function deleteItem(id: number): Promise<void> {
+  await api.delete(`items/${id}/`)
+}
