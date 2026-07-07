@@ -165,6 +165,14 @@ export async function updateClient(
   return response.data
 }
 
+export async function deleteClient(id: number): Promise<void> {
+
+  await api.delete(
+    `clientes/${id}/`
+  )
+
+}
+
 export async function getProducts(
   search?: string,
   ordering?: string,
