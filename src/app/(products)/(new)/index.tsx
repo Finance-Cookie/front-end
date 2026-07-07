@@ -25,7 +25,6 @@ export default function Product() {
                         color='text-branco-100'
                         label='Avançar'
                         onPress={async () => {
-                            console.log("botao clicado")
                             try {
                                 const response = await createProduct({
                                     nome,

@@ -1,15 +1,15 @@
 import { createContext, useContext, useState, ReactNode } from 'react'
 
 type Address = {
-  neighborhood?: string
-  street?: string
-  number?: string
+  bairro?: string
+  logradouro?: string
+  numero?: string
 }
 
 type Client = {
-  name?: string
-  phone?: string
-  address?: Address
+  nome?: string
+  telefone?: string
+  endereco?: Address
   email?: string
 }
 
