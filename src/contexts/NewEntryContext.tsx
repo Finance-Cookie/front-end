@@ -9,7 +9,7 @@ type Entry = {
   products?: Product[]
   freight?: number
   discount?: number
-  payment?: string
+  payment?: number
   description?: string
   value?: number
 }
