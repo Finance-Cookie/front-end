@@ -124,8 +124,13 @@ export type UpdateMePayload = {
   saldo_online?: number | string
 }
 
-export async function getClients(): Promise<Client[]> {
-  const response = await api.get<{ results: Client[] }>('clientes/')
+export async function getClients(search?: string, ordering?: string): Promise<Client[]> {
+  const params: any = {}
+
+  if (search) params.search = search
+  if (ordering) params.ordering = ordering
+
+  const response = await api.get<{ results: Client[] }>('clientes/', { params })
   return response.data.results
 }
 

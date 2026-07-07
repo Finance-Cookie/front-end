@@ -18,7 +18,7 @@ export default function ClientsList(){
     async function loadClients(searchText = "", ordering = "") {
         try {
             setLoading(true)
-            const data = await getClients()
+            const data = await getClients(searchText, ordering)
             setClients(data)
         } catch (error) {
             console.error("Erro ao buscar clientes:", error)
@@ -55,6 +55,13 @@ export default function ClientsList(){
                             selected={ordering === "-nome"}
                             background="bg-vermelho-100"
                             onPress={() => setOrdering("-nome")}
+                        />
+
+                        <FilterButton
+                            label="Bairro"
+                            selected={ordering === "bairro"}
+                            background="bg-vermelho-100"
+                            onPress={() => setOrdering("bairro")}
                         />
 
                     </View>
