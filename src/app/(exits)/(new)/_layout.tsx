@@ -14,6 +14,7 @@ export default function NewExitLayout() {
               },
         }}>
         <Stack.Screen name='index' options={{ title: "Tipo de Saída"}}/>
+        <Stack.Screen name='select-type' options={{ title: "Selecionar Tipo" }} />
         <Stack.Screen name='purchase-place' options={{ title: "Local da Compra"}}/>
         <Stack.Screen name='purchase-itens' options={{ title: "Itens"}}/>
         <Stack.Screen name='newItem' options={{ title: "Novo Item"}}/>

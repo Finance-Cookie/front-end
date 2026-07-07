@@ -10,6 +10,7 @@ type PurchaseItem = {
 type Exit = {
   type?: number
   place?: string
+  typeName?: string
   items?: PurchaseItem[]
   freight?: number
   discount?: number
