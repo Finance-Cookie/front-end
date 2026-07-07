@@ -5,6 +5,7 @@ type Product = { id: string; name: string; qty: number }
 type Entry = {
   type?: number
   client?: string
+  typeName?: string
   products?: Product[]
   freight?: number
   discount?: number
@@ -21,7 +22,10 @@ type NewEntryContextType = {
 const NewEntryContext = createContext<NewEntryContextType | null>(null)
 
 export function NewEntryProvider({ children }: { children: ReactNode }) {
-  const [entry, setEntry] = useState<Entry>({})
+  const [entry, setEntry] = useState<Entry>({
+    type: undefined,
+    typeName: "",
+  })
 
   return (
     <NewEntryContext.Provider value={{ entry, setEntry }}>
