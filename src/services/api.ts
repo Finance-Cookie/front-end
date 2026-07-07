@@ -30,7 +30,7 @@ function resolveApiBase(): string {
 
 
   // 3) Fallback defaults for emulator / localhost
-  return 'http://127.0.0.1:8000/'
+  return 'http://127.0.0.1:8000'
 }
 
 const BASE_URL = resolveApiBase()
