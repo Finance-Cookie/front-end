@@ -47,7 +47,7 @@ export default function Home() {
                         </Card>
                     </View>
                     <View className="flex-auto h-full justify-between">
-                        <Card onPress={() => router.push("/(entries)")} borderColor="verde" backgroundColor="#FFFFF2" className="flex-auto justify-evenly">
+                        <Card onPress={() => router.push("/(entradas)")} borderColor="verde" backgroundColor="#FFFFF2" className="flex-auto justify-evenly">
                             <Feather name="log-in" color="#2B8722" size={20} />
                             <Text className="text-cinza-300 text-xl">Entradas</Text>
                             <Text className="text-preto text-3xl font-bold">R$ 00,00</Text>
@@ -81,7 +81,7 @@ export default function Home() {
                     </Card>
                 </View>
                 <View className="w-full gap-4">
-                    <Button onPress={() => router.push("/(entries)/(new)")} label="Nova Entrada" color="text-branco-100" background="bg-verde"/>
+                    <Button onPress={() => router.push("/(entradas)/(new)")} label="Nova Entrada" color="text-branco-100" background="bg-verde"/>
                     <Button onPress={() => router.push("/(exits)/(new)")} label="Nova Saída" color="text-branco-100" background="bg-vermelho-100"/>
                 </View>
 

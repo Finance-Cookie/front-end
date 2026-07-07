@@ -18,7 +18,7 @@ export default function NewType() {
                 nome,
             })
 
-            router.replace("/(types)/types")
+            router.back()
         } catch (error: any) {
             console.log("Erro ao criar tipo:", error?.response?.data || error.message)
         } finally {

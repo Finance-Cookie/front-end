@@ -30,7 +30,7 @@ function resolveApiBase(): string {
 
 
   // 3) Fallback defaults for emulator / localhost
-  return 'http://127.0.0.1:8000/'
+  return 'https://super-duper-succotash-qg5597j6794f4r5w-8000.app.github.dev'
 }
 
 const BASE_URL = resolveApiBase()
@@ -312,6 +312,46 @@ export async function getTiposPagamento(
 export async function getTipoPagamento(id: number): Promise<TipoPagamento> {
   const response = await api.get<TipoPagamento>(`tipos/${id}/`)
   return response.data
+}
+
+export type NewEntryPayload = {
+  descricao: string
+  valorTotal: number
+  formapagamento: number
+  tipocategoria: number
+}
+
+export async function createEntry(
+  payload: NewEntryPayload
+) {
+  const response = await api.post("entradas/", payload)
+  return response.data
+}
+
+export type Entry = {
+  id: number
+  data: string
+  descricao: string
+  valorTotal: number
+  formapagamento: number
+  tipocategoria: number
+}
+
+export async function getEntries(
+  search?: string,
+  ordering?: string,
+): Promise<Entry[]> {
+  const params: any = {}
+
+  if (search) params.search = search
+  if (ordering) params.ordering = ordering
+
+  const response = await api.get<{ results: Entry[] }>(
+    "entradas/",
+    { params }
+  )
+
+  return response.data.results
 }
 
 export async function createTipoPagamento(
