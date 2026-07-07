@@ -30,7 +30,7 @@ function resolveApiBase(): string {
 
 
   // 3) Fallback defaults for emulator / localhost
-  return 'https://super-duper-succotash-qg5597j6794f4r5w-8000.app.github.dev'
+  return 'http://127.0.0.1:8000/'
 }
 
 const BASE_URL = resolveApiBase()
@@ -134,6 +134,20 @@ export type UpdateMePayload = {
   saldo_online?: number | string
 }
 
+export type TipoPagamento = {
+  id: number
+  nome: string
+}
+
+export type NewTipoPagamentoPayload = {
+  nome?: string
+}
+
+type PaginatedResponse<T> = {
+  results: T[]
+}
+
+
 export async function getClients(search?: string, ordering?: string): Promise<Client[]> {
   const params: any = {}
 
@@ -142,6 +156,7 @@ export async function getClients(search?: string, ordering?: string): Promise<Cl
 
   const response = await api.get<{ results: Client[] }>('clientes/', { params })
   return response.data.results
+
 }
 
 
@@ -176,7 +191,6 @@ export async function updateClient(
     `clientes/${id}/`,
     body
   )
-
   return response.data
 }
 
@@ -273,3 +287,60 @@ export async function createProduct(payload: NewProductPayload): Promise<Product
   return response.data
 }
 
+function normalizeList<T>(data: T[] | PaginatedResponse<T>): T[] {
+  if (Array.isArray(data)) return data
+  return data.results || []
+}
+
+export async function getTiposPagamento(
+  search?: string,
+  ordering?: string
+): Promise<TipoPagamento[]> {
+  const params: any = {}
+
+  if (search) params.search = search
+  if (ordering) params.ordering = ordering
+
+  const response = await api.get<TipoPagamento[] | PaginatedResponse<TipoPagamento>>(
+    "tipos/",
+    { params }
+  )
+
+  return normalizeList(response.data)
+}
+
+export async function getTipoPagamento(id: number): Promise<TipoPagamento> {
+  const response = await api.get<TipoPagamento>(`tipos/${id}/`)
+  return response.data
+}
+
+export async function createTipoPagamento(
+  payload: NewTipoPagamentoPayload
+): Promise<TipoPagamento> {
+  const body = {
+    nome: payload.nome || "",
+  }
+
+  const response = await api.post<TipoPagamento>("tipos/", body)
+  return response.data
+}
+
+export async function updateTipoPagamento(
+  id: number,
+  payload: NewTipoPagamentoPayload
+): Promise<TipoPagamento> {
+  const body = {
+    nome: payload.nome || "",
+  }
+
+  const response = await api.patch<TipoPagamento>(
+    `tipos/${id}/`,
+    body
+  )
+
+  return response.data
+}
+
+export async function deleteTipoPagamento(id: number): Promise<void> {
+  await api.delete(`tipos/${id}/`)
+}
